@@ -51,8 +51,12 @@ const envSchema = z.object({
   if (env.NEWAPI_RETURN_URL !== env.ALLOWED_NEWAPI_RETURN_URL) {
     ctx.addIssue({ code: "custom", path: ["ALLOWED_NEWAPI_RETURN_URL"], message: "必须与 NEWAPI_RETURN_URL 完全一致" });
   }
-  if (env.ADMIN_ENABLED && !/^\$2[aby]\$/.test(env.ADMIN_PASSWORD_HASH)) {
-    ctx.addIssue({ code: "custom", path: ["ADMIN_PASSWORD_HASH"], message: "管理后台启用时必须提供 bcrypt 哈希" });
+  if (env.ADMIN_ENABLED && !/^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/.test(env.ADMIN_PASSWORD_HASH)) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["ADMIN_PASSWORD_HASH"],
+      message: "管理后台启用时必须提供完整的 60 字符 bcrypt 哈希"
+    });
   }
 });
 
