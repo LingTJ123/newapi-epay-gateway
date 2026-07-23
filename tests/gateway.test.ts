@@ -9,7 +9,7 @@ function submitParams(key: string, overrides: Record<string, string> = {}) {
     type: "alipay",
     out_trade_no: "NA202607230001",
     notify_url: "https://ltj666.ltd/api/user/epay/notify",
-    return_url: "https://ltj666.ltd/console/log",
+    return_url: "https://ltj666.ltd/usage-logs",
     name: "充值 1 元",
     money: "1.00",
     sign_type: "MD5",

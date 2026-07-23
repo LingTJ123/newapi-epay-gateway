@@ -43,7 +43,7 @@ npm run build
 | 支付宝异步通知 | `https://ltj666.ltd/epay/alipay/notify` |
 | 支付宝同步返回 | `https://ltj666.ltd/epay/alipay/return` |
 | NewAPI 通知 | `https://ltj666.ltd/api/user/epay/notify` |
-| NewAPI 返回页 | `https://ltj666.ltd/console/log` |
+| NewAPI 返回页 | `https://ltj666.ltd/usage-logs` |
 | 网关本机端口 | `127.0.0.1:3100` |
 
 ## 文档
