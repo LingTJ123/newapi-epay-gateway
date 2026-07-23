@@ -8,8 +8,8 @@ function submitParams(key: string, overrides: Record<string, string> = {}) {
     pid: "10001",
     type: "alipay",
     out_trade_no: "NA202607230001",
-    notify_url: "https://ltj666.ltd/api/user/epay/notify",
-    return_url: "https://ltj666.ltd/usage-logs",
+    notify_url: "https://newapi.example.com/api/user/epay/notify",
+    return_url: "https://newapi.example.com/usage-logs",
     name: "充值 1 元",
     money: "1.00",
     sign_type: "MD5",
@@ -21,7 +21,7 @@ function submitParams(key: string, overrides: Record<string, string> = {}) {
 
 function notifyParams(overrides: Record<string, string> = {}) {
   return {
-    app_id: "2021006175665149",
+    app_id: "2021000000000000",
     seller_id: "2088000000000000",
     out_trade_no: "NA202607230001",
     trade_no: "20260723220000000001",

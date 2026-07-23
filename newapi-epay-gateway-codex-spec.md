@@ -17,7 +17,7 @@
 
 ---
 
-## 2. 当前环境
+## 2. 示例部署环境
 
 ### 2.1 服务器
 
@@ -26,20 +26,20 @@
 - Web 服务：1Panel 管理的 OpenResty
 - Docker：已安装
 - Docker Compose：已安装
-- 公网域名：`https://ltj666.ltd`
+- 公网域名：`https://newapi.example.com`（部署时替换为自己的域名）
 - 没有额外域名
 - 没有额外服务器
 
 ### 2.2 NewAPI
 
-- 公网地址：`https://ltj666.ltd`
+- 公网地址：`https://newapi.example.com`
 - 本地监听：`127.0.0.1:3000`
 - OpenResty 根路径代理：`/` → `http://127.0.0.1:3000`
 
 ### 2.3 支付网关
 
 - 计划本地监听：`127.0.0.1:3100`
-- 公网入口：`https://ltj666.ltd/epay`
+- 公网入口：`https://newapi.example.com/epay`
 - OpenResty 路径代理：`/epay` → `http://127.0.0.1:3100`
 - 1Panel 自动生成的实际配置：
 
@@ -66,7 +66,7 @@ location /epay {
 实际转发结果：
 
 ```text
-POST https://ltj666.ltd/epay/submit.php
+POST https://newapi.example.com/epay/submit.php
 → POST http://127.0.0.1:3100/epay/submit.php
 ```
 
@@ -105,7 +105,7 @@ Cannot POST /epay/submit.php
 执行：
 
 ```bash
-curl -v -X POST https://ltj666.ltd/epay/submit.php
+curl -v -X POST https://newapi.example.com/epay/submit.php
 ```
 
 返回 HTTP 404：
@@ -131,7 +131,7 @@ Cannot POST /epay/submit.php
 用户浏览器
    │
    ▼
-https://ltj666.ltd
+https://newapi.example.com
    │
    ├── /             → OpenResty → 127.0.0.1:3000 → NewAPI
    │
@@ -321,12 +321,12 @@ newapi-epay-gateway/
 
 ## 8. 支付宝证书与密钥
 
-当前已获得：
+部署前应准备：
 
 ```text
 alipayCertPublicKey_RSA2.crt
 alipayRootCert.crt
-appCertPublicKey_2021006175665149.crt
+appCertPublicKey_YOUR_APP_ID.crt
 应用私钥RSA2048-敏感数据，请妥善保管.txt
 应用公钥RSA2048.txt
 CSR 文件
@@ -350,7 +350,7 @@ CSR 文件
 
 ### 8.1 私钥格式
 
-当前私钥正文以 `MIIEv...` 开头，且没有 PEM 头尾。
+若私钥正文以 `MIIEv...` 开头且没有 PEM 头尾，应先转换格式。
 
 应转换为 PKCS8 PEM：
 
@@ -414,13 +414,13 @@ MIN_AMOUNT=0.01
 MAX_AMOUNT=100.00
 
 # 公网 URL
-GATEWAY_PUBLIC_URL=https://ltj666.ltd/epay
-NEWAPI_NOTIFY_URL=https://ltj666.ltd/api/user/epay/notify
-NEWAPI_RETURN_URL=https://ltj666.ltd/console/log
+GATEWAY_PUBLIC_URL=https://newapi.example.com/epay
+NEWAPI_NOTIFY_URL=https://newapi.example.com/api/user/epay/notify
+NEWAPI_RETURN_URL=https://newapi.example.com/usage-logs
 
 # 支付宝
-ALIPAY_APP_ID=2021006175665149
-ALIPAY_SELLER_ID=2088xxxxxxxxxxxx
+ALIPAY_APP_ID=replace_with_alipay_app_id
+ALIPAY_SELLER_ID=replace_with_2088_merchant_pid
 ALIPAY_GATEWAY=https://openapi.alipay.com/gateway.do
 ALIPAY_KEY_TYPE=PKCS8
 ALIPAY_PRIVATE_KEY_PATH=/run/secrets/app_private_key.pem
@@ -449,8 +449,8 @@ ADMIN_SESSION_SECRET=
 # 安全
 TRUST_PROXY=true
 RATE_LIMIT_ENABLED=true
-ALLOWED_NEWAPI_NOTIFY_URL=https://ltj666.ltd/api/user/epay/notify
-ALLOWED_NEWAPI_RETURN_URL=https://ltj666.ltd/console/log
+ALLOWED_NEWAPI_NOTIFY_URL=https://newapi.example.com/api/user/epay/notify
+ALLOWED_NEWAPI_RETURN_URL=https://newapi.example.com/usage-logs
 ```
 
 启动时必须用 Zod 或同类方式校验必填项。
@@ -572,8 +572,8 @@ product_code=FAST_INSTANT_TRADE_PAY
 out_trade_no=<NewAPI 订单号>
 total_amount=<订单金额>
 subject=<商品名称>
-notify_url=https://ltj666.ltd/epay/alipay/notify
-return_url=https://ltj666.ltd/epay/alipay/return
+notify_url=https://newapi.example.com/epay/alipay/notify
+return_url=https://newapi.example.com/epay/alipay/return
 ```
 
 ---
@@ -671,7 +671,7 @@ GET /epay/alipay/return
 建议：
 
 ```text
-303 → https://ltj666.ltd/console/log
+303 → https://newapi.example.com/usage-logs
 ```
 
 ---
@@ -681,7 +681,7 @@ GET /epay/alipay/return
 网关向：
 
 ```text
-POST https://ltj666.ltd/api/user/epay/notify
+POST https://newapi.example.com/api/user/epay/notify
 ```
 
 发送：
@@ -1022,8 +1022,8 @@ APPID
 必须严格匹配：
 
 ```text
-https://ltj666.ltd/api/user/epay/notify
-https://ltj666.ltd/console/log
+https://newapi.example.com/api/user/epay/notify
+https://newapi.example.com/usage-logs
 ```
 
 不得请求：
@@ -1148,13 +1148,13 @@ networks:
 验证：
 
 ```bash
-curl -i https://ltj666.ltd/epay/healthz
+curl -i https://newapi.example.com/epay/healthz
 ```
 
 应返回 HTTP 200。
 
 ```bash
-curl -X POST https://ltj666.ltd/epay/submit.php
+curl -X POST https://newapi.example.com/epay/submit.php
 ```
 
 无参数时可以返回 HTTP 400 和业务错误，但不能返回：
@@ -1174,10 +1174,10 @@ NewAPI EPay 页面填写：
 
 ```text
 EPay 端点：
-https://ltj666.ltd/epay
+https://newapi.example.com/epay
 
 回调地址：
-https://ltj666.ltd
+https://newapi.example.com
 
 易支付商户 ID：
 10001
@@ -1189,7 +1189,7 @@ EPay 密钥：
 不能填写：
 
 ```text
-https://ltj666.ltd/epay/submit.php
+https://newapi.example.com/epay/submit.php
 ```
 
 因为 NewAPI 会在 EPay 端点后追加 `/submit.php`。
@@ -1247,13 +1247,13 @@ curl -4 https://api.ipify.org
 支付异步通知由程序下单时设置：
 
 ```text
-https://ltj666.ltd/epay/alipay/notify
+https://newapi.example.com/epay/alipay/notify
 ```
 
 同步返回：
 
 ```text
-https://ltj666.ltd/epay/alipay/return
+https://newapi.example.com/epay/alipay/return
 ```
 
 ---
@@ -1374,7 +1374,7 @@ newapi-epay-db
 ```bash
 curl -i http://127.0.0.1:3100/healthz
 curl -i http://127.0.0.1:3100/epay/healthz
-curl -i https://ltj666.ltd/epay/healthz
+curl -i https://newapi.example.com/epay/healthz
 ```
 
 全部返回 200。

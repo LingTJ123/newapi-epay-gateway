@@ -26,7 +26,8 @@ git fetch --all --prune
 git pull --ff-only
 docker compose up -d --build
 curl -fsS http://127.0.0.1:3100/healthz
-curl -fsS https://ltj666.ltd/epay/healthz
+# 将示例域名替换为自己的 NewAPI HTTPS 域名
+curl -fsS https://newapi.example.com/epay/healthz
 ```
 
 Prisma migration只向前执行。升级前必须保留数据库备份和当前 Git 提交号：

@@ -37,13 +37,15 @@ npm run build
 
 ## 默认公网配置
 
+下表使用 IANA 保留的 `newapi.example.com` 作为示例域名；部署时必须全部替换为自己的 NewAPI HTTPS 域名。
+
 | 项目 | 值 |
 |---|---|
-| EPay 端点 | `https://ltj666.ltd/epay` |
-| 支付宝异步通知 | `https://ltj666.ltd/epay/alipay/notify` |
-| 支付宝同步返回 | `https://ltj666.ltd/epay/alipay/return` |
-| NewAPI 通知 | `https://ltj666.ltd/api/user/epay/notify` |
-| NewAPI 返回页 | `https://ltj666.ltd/usage-logs` |
+| EPay 端点 | `https://newapi.example.com/epay` |
+| 支付宝异步通知 | `https://newapi.example.com/epay/alipay/notify` |
+| 支付宝同步返回 | `https://newapi.example.com/epay/alipay/return` |
+| NewAPI 通知 | `https://newapi.example.com/api/user/epay/notify` |
+| NewAPI 返回页 | `https://newapi.example.com/usage-logs` |
 | 网关本机端口 | `127.0.0.1:3100` |
 
 ## 文档
