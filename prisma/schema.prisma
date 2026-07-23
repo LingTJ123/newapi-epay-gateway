@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  WAIT_PAY
+  PAID
+  COMPLETED
+  CLOSED
+  REFUNDED
+  FAILED
+}
+
+enum NotifyStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+}
+
+model Order {
+  id                          BigInt       @id @default(autoincrement())
+  outTradeNo                  String       @unique @map("out_trade_no") @db.VarChar(64)
+  epayPid                     String       @map("epay_pid") @db.VarChar(32)
+  payType                     String       @map("pay_type") @db.VarChar(16)
+  subject                     String       @db.VarChar(256)
+  amountCents                 Int          @map("amount_cents")
+  currency                    String       @default("CNY") @db.Char(3)
+  newapiNotifyUrl             String       @map("newapi_notify_url") @db.VarChar(512)
+  newapiReturnUrl             String       @map("newapi_return_url") @db.VarChar(512)
+  clientParam                 String?      @map("client_param") @db.VarChar(512)
+  status                      OrderStatus  @default(WAIT_PAY)
+  alipayTradeNo               String?      @unique @map("alipay_trade_no") @db.VarChar(64)
+  alipayBuyerId               String?      @map("alipay_buyer_id") @db.VarChar(64)
+  alipayBuyerLogonIdMasked    String?      @map("alipay_buyer_logon_id_masked") @db.VarChar(128)
+  alipayTradeStatus           String?      @map("alipay_trade_status") @db.VarChar(32)
+  paidAt                      DateTime?     @map("paid_at")
+  expiredAt                   DateTime      @map("expired_at")
+  lastQueriedAt               DateTime?     @map("last_queried_at")
+  newapiNotifiedAt            DateTime?     @map("newapi_notified_at")
+  newapiNotifyStatus          NotifyStatus @default(PENDING) @map("newapi_notify_status")
+  newapiNotifyAttempts        Int          @default(0) @map("newapi_notify_attempts")
+  newapiNotifyLastError       String?      @map("newapi_notify_last_error") @db.VarChar(1024)
+  newapiNotifyNextAt          DateTime?     @map("newapi_notify_next_at")
+  newapiNotifyLockedAt        DateTime?     @map("newapi_notify_locked_at")
+  version                     Int          @default(0)
+  createdAt                   DateTime     @default(now()) @map("created_at")
+  updatedAt                   DateTime     @updatedAt @map("updated_at")
+  events                      PaymentEvent[]
+  notifyAttempts              NotifyAttempt[]
+
+  @@index([status, expiredAt])
+  @@index([newapiNotifyStatus, newapiNotifyNextAt])
+  @@map("orders")
+}
+
+model PaymentEvent {
+  id             BigInt   @id @default(autoincrement())
+  orderId        BigInt   @map("order_id")
+  eventType      String   @map("event_type") @db.VarChar(64)
+  externalId     String?  @map("external_id") @db.VarChar(128)
+  payloadSummary Json?    @map("payload_summary")
+  createdAt      DateTime @default(now()) @map("created_at")
+  order          Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, createdAt])
+  @@map("payment_events")
+}
+
+model NotifyAttempt {
+  id              BigInt   @id @default(autoincrement())
+  orderId         BigInt   @map("order_id")
+  httpStatus      Int?     @map("http_status")
+  responseSummary String?  @map("response_summary") @db.VarChar(512)
+  errorType       String?  @map("error_type") @db.VarChar(64)
+  durationMs      Int      @map("duration_ms")
+  succeeded       Boolean
+  createdAt       DateTime @default(now()) @map("created_at")
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, createdAt])
+  @@map("notify_attempts")
+}

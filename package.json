@@ -1,0 +1,53 @@
+{
+  "name": "newapi-epay-gateway",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "兼容 NewAPI EPay 协议的支付宝证书模式支付网关",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "prisma generate && tsc -p tsconfig.build.json",
+    "start": "node dist/server.js",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check": "npm run typecheck && npm test",
+    "admin:hash": "tsx scripts/hash-admin-password.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.3",
+    "alipay-sdk": "4.14.0",
+    "bcryptjs": "3.0.2",
+    "dotenv": "17.2.3",
+    "express": "5.1.0",
+    "express-rate-limit": "8.6.0",
+    "helmet": "8.1.0",
+    "pino": "10.1.0",
+    "pino-http": "11.0.0",
+    "prisma": "6.19.3",
+    "zod": "4.1.12"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.5",
+    "@types/node": "22.19.1",
+    "@types/supertest": "6.0.3",
+    "@vitest/coverage-v8": "4.0.14",
+    "supertest": "7.1.4",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "vitest": "4.0.14"
+  },
+  "allowScripts": {
+    "@prisma/client@6.19.3": true,
+    "prisma@6.19.3": true,
+    "@prisma/engines@6.19.3": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.1": true
+  }
+}

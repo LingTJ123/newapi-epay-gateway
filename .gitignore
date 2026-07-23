@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+*.zip
+.DS_Store
+.idea/
+.vscode/
+secrets/*
+!secrets/.gitkeep
+backups/
+prisma/*.db
+prisma/*.db-journal
